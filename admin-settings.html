@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Settings - FurniShop Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+    <div class="admin-main">
+        <header id="admin-topbar" class="admin-topbar"></header>
+
+        <div class="admin-content">
+            <div class="admin-card" style="max-width: 750px; margin: 0 auto;">
+                <div class="admin-card-header">
+                    <h2>Global E-Commerce System Configurations</h2>
+                </div>
+
+                <div class="admin-card-body">
+                    <form onsubmit="handleSettingsSave(event)">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Website Name *</label>
+                                <input type="text" id="set-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Logo Text *</label>
+                                <input type="text" id="set-logo" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Currency Symbol *</label>
+                                <input type="text" id="set-currency" class="form-control" required placeholder="$">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tax Rate (%) *</label>
+                                <input type="number" id="set-tax" class="form-control" required min="0" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Delivery Charge ($) *</label>
+                                <input type="number" id="set-delivery" class="form-control" required min="0" step="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Low Stock Alert Threshold (Units) *</label>
+                            <input type="number" id="set-lowstock" class="form-control" required min="1">
+                        </div>
+
+                        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
+                            <button type="submit" class="btn btn-accent btn-lg">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Global Configurations
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCurrentSettings();
+        });
+
+        function loadCurrentSettings() {
+            const settings = db.getSettings();
+            document.getElementById('set-name').value = settings.websiteName || 'FurniShop Luxury';
+            document.getElementById('set-logo').value = settings.logoText || 'FurniShop';
+            document.getElementById('set-currency').value = settings.currency || '$';
+            document.getElementById('set-tax').value = settings.taxRate || 8;
+            document.getElementById('set-delivery').value = settings.deliveryCharge || 150;
+            document.getElementById('set-lowstock').value = settings.lowStockLimit || 3;
+        }
+
+        function handleSettingsSave(e) {
+            e.preventDefault();
+
+            const newSettings = {
+                websiteName: document.getElementById('set-name').value,
+                logoText: document.getElementById('set-logo').value,
+                currency: document.getElementById('set-currency').value,
+                taxRate: parseFloat(document.getElementById('set-tax').value),
+                deliveryCharge: parseFloat(document.getElementById('set-delivery').value),
+                lowStockLimit: parseInt(document.getElementById('set-lowstock').value)
+            };
+
+            db.saveSettings(newSettings);
+            alert('Settings saved successfully!\nAll customer calculations (tax, shipping, currency) and admin thresholds automatically updated.');
+            loadCurrentSettings();
+        }
+    </script>
+</body>
+</html>

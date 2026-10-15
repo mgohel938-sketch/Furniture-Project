@@ -1,0 +1,229 @@
+<%@ Page Title="FurniShop - Shop Luxury Catalog" Language="C#" MasterPageFile="~/Customer.Master" AutoEventWireup="true" CodeBehind="Shop.aspx.cs" Inherits="FurniShop.Shop" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <main>
+        <div class="page-banner">
+            <div class="container">
+                <h1 class="page-title">Luxury Furniture Collection</h1>
+                <div class="breadcrumb">
+                    <a href="Index.aspx">Home</a> / <span>Shop</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="padding-bottom: 6rem;">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2.5rem;">
+                
+                <!-- Filters Sidebar -->
+                <aside style="background: var(--clr-bg-card); padding: 1.75rem; border-radius: var(--radius-md); border: 1px solid var(--clr-border); height: fit-content;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--clr-border);">Filter Collection</h3>
+                    
+                    <!-- Search Input -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-magnifying-glass"></i> Search Products</label>
+                        <input type="text" id="shop-search" class="form-control" placeholder="Search by name, material..." onkeyup="applyFilters()">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="form-group">
+                        <label class="form-label">Categories</label>
+                        <div id="category-filter-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="form-group">
+                        <label class="form-label" style="display:flex; justify-content:space-between;">
+                            <span>Max Price:</span>
+                            <span id="price-value" style="color: var(--clr-accent); font-weight:700;">$5,000</span>
+                        </label>
+                        <input type="range" id="price-slider" min="500" max="5000" step="100" value="5000" oninput="updatePriceLabel(this.value); applyFilters();" style="width:100%; accent-color: var(--clr-accent);">
+                    </div>
+
+                    <button type="button" onclick="resetFilters()" class="btn btn-outline btn-sm" style="width:100%; margin-top: 1rem;">Reset Filters</button>
+                </aside>
+
+                <!-- Shop Main Content -->
+                <div>
+                    <!-- Top Toolbar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; background: var(--clr-bg-alt); padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+                        <div id="results-count" style="font-weight: 500; font-size: 0.9375rem;">Showing 0 products</div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <label style="font-size: 0.875rem; font-weight:600;">Sort By:</label>
+                            <select id="shop-sort" class="form-control" onchange="applyFilters()" style="padding: 0.4rem 0.8rem; width: auto;">
+                                <option value="featured">Featured & Recommended</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Customer Rating</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="products-grid" id="shop-products-grid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="ScriptContent" runat="server">
+    <script>
+        let selectedCategory = 'All';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const catParam = urlParams.get('category');
+            if (catParam) {
+                selectedCategory = catParam;
+            }
+
+            renderCategoryFilters();
+            applyFilters();
+        });
+
+        function renderCategoryFilters() {
+            const container = document.getElementById('category-filter-list');
+            if (!container) return;
+            const categories = db.getCategories();
+
+            let html = `
+                <button type="button" onclick="setCategoryFilter('All', this)" class="category-filter-btn ${selectedCategory === 'All' ? 'active-cat' : ''}" style="text-align:left; padding:0.4rem 0; border:none; background:none; font-weight:${selectedCategory === 'All' ? '700' : '400'}; color:${selectedCategory === 'All' ? 'var(--clr-accent)' : 'var(--clr-text-main)'}">
+                    <i class="fa-solid fa-layer-group"></i> All Furniture (${db.getProducts().length})
+                </button>
+            `;
+
+            categories.forEach(cat => {
+                const count = db.getProducts().filter(p => p.category === cat.name).length;
+                const isActive = selectedCategory === cat.name;
+                html += `
+                    <button type="button" onclick="setCategoryFilter('${cat.name}', this)" class="category-filter-btn" style="text-align:left; padding:0.4rem 0; border:none; background:none; font-weight:${isActive ? '700' : '400'}; color:${isActive ? 'var(--clr-accent)' : 'var(--clr-text-main)'}">
+                        <i class="fa-solid ${cat.icon || 'fa-tag'}"></i> ${cat.name} (${count})
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function setCategoryFilter(catName, btnElement) {
+            selectedCategory = catName;
+            document.querySelectorAll('.category-filter-btn').forEach(b => {
+                b.style.fontWeight = '400';
+                b.style.color = 'var(--clr-text-main)';
+            });
+            if (btnElement) {
+                btnElement.style.fontWeight = '700';
+                btnElement.style.color = 'var(--clr-accent)';
+            }
+            applyFilters();
+        }
+
+        function updatePriceLabel(val) {
+            document.getElementById('price-value').textContent = formatPrice(val);
+        }
+
+        function resetFilters() {
+            selectedCategory = 'All';
+            document.getElementById('shop-search').value = '';
+            document.getElementById('price-slider').value = 5000;
+            updatePriceLabel(5000);
+            renderCategoryFilters();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            let products = db.getProducts();
+            const search = document.getElementById('shop-search').value.toLowerCase();
+            const maxPrice = parseFloat(document.getElementById('price-slider').value);
+            const sort = document.getElementById('shop-sort').value;
+
+            if (selectedCategory !== 'All') {
+                products = products.filter(p => p.category === selectedCategory);
+            }
+
+            if (search) {
+                products = products.filter(p => 
+                    p.name.toLowerCase().includes(search) || 
+                    p.description.toLowerCase().includes(search) ||
+                    p.material.toLowerCase().includes(search)
+                );
+            }
+
+            products = products.filter(p => {
+                const finalP = p.discount ? p.price * (1 - p.discount/100) : p.price;
+                return finalP <= maxPrice;
+            });
+
+            if (sort === 'price-low') {
+                products.sort((a,b) => (a.discount?a.price*(1-a.discount/100):a.price) - (b.discount?b.price*(1-b.discount/100):b.price));
+            } else if (sort === 'price-high') {
+                products.sort((a,b) => (b.discount?b.price*(1-b.discount/100):b.price) - (a.discount?a.price*(1-a.discount/100):a.price));
+            } else if (sort === 'rating') {
+                products.sort((a,b) => b.rating - a.rating);
+            }
+
+            document.getElementById('results-count').textContent = `Showing ${products.length} products`;
+            renderShopGrid(products);
+        }
+
+        function renderShopGrid(products) {
+            const container = document.getElementById('shop-products-grid');
+            if (!container) return;
+
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align:center; padding: 4rem 1rem;">
+                        <i class="fa-solid fa-couch" style="font-size: 3rem; color: var(--clr-text-light); margin-bottom:1rem;"></i>
+                        <h3>No matching luxury items found</h3>
+                        <p style="color: var(--clr-text-muted);">Try adjusting your filter criteria or search terms.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = products.map(prod => {
+                const isWish = db.isInWishlist(prod.id);
+                const finalPrice = prod.discount ? prod.price * (1 - prod.discount/100) : prod.price;
+                return `
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <img src="${prod.image}" alt="${prod.name}">
+                            <div class="product-badges">
+                                ${prod.discount ? `<span class="badge badge-discount">-${prod.discount}%</span>` : ''}
+                                ${prod.stock <= 0 ? `<span class="badge badge-out">Out of Stock</span>` : (prod.stock <= 3 ? `<span class="badge badge-stock">Only ${prod.stock} Left</span>` : '')}
+                            </div>
+                            <button type="button" class="wishlist-btn-card ${isWish ? 'active' : ''}" onclick="handleToggleWishlist('${prod.id}', this)" title="Wishlist">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">${prod.category}</span>
+                            <h3 class="product-title"><a href="ProductDetails.aspx?id=${prod.id}">${prod.name}</a></h3>
+                            <div class="product-rating">
+                                ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(prod.rating))}
+                                <span class="rating-count">(${prod.reviewCount})</span>
+                            </div>
+                            <div class="product-price-row">
+                                <div class="price-wrap">
+                                    <span class="price-current">${formatPrice(finalPrice)}</span>
+                                    ${prod.discount ? `<span class="price-original">${formatPrice(prod.price)}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <a href="ProductDetails.aspx?id=${prod.id}" class="btn btn-outline btn-sm">View Details</a>
+                                <button type="button" onclick="handleAddToCart('${prod.id}')" class="btn btn-primary btn-sm" ${prod.stock <= 0 ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                                    <i class="fa-solid fa-bag-shopping"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</asp:Content>

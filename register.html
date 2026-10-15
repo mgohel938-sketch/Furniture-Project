@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FurniShop - Create Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header id="main-header"></header>
+
+    <main>
+        <div class="container" style="padding: 5rem 0; display: flex; justify-content: center;">
+            <div style="background: var(--clr-bg-card); border-radius: var(--radius-lg); border: 1px solid var(--clr-border); box-shadow: var(--shadow-lg); padding: 3.5rem; width: 100%; max-width: 520px;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <i class="fa-solid fa-user-plus" style="font-size: 2.5rem; color: var(--clr-accent); margin-bottom: 0.5rem;"></i>
+                    <h2 style="font-size: 2rem;">Create Your Account</h2>
+                    <p style="color: var(--clr-text-muted); font-size: 0.9rem;">Join the FurniShop private concierge club.</p>
+                </div>
+
+                <form onsubmit="handleCustomerRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="reg-name" class="form-control" required placeholder="e.g. Julian Thorne">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" id="reg-email" class="form-control" required placeholder="julian@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="reg-phone" class="form-control" placeholder="+1 (555) 0192">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Password *</label>
+                            <input type="password" id="reg-pass" class="form-control" required placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password *</label>
+                            <input type="password" id="reg-confirm" class="form-control" required placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1.5rem;">Register Account</button>
+
+                    <div style="text-align: center; font-size: 0.9rem; color: var(--clr-text-muted);">
+                        Already have an account? <a href="login.html" style="color: var(--clr-accent); font-weight:700;">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer id="main-footer" class="footer"></footer>
+
+    <script src="js/db.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function handleCustomerRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const pass = document.getElementById('reg-pass').value;
+            const confirm = document.getElementById('reg-confirm').value;
+
+            if (pass !== confirm) {
+                showToast('Passwords do not match!', 'error');
+                return;
+            }
+
+            const result = db.registerUser({ name, email, phone, password: pass });
+            if (result.success) {
+                showToast('Account created successfully! Please sign in.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 800);
+            } else {
+                showToast(result.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - FurniShop Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+    <div class="admin-main">
+        <header id="admin-topbar" class="admin-topbar"></header>
+
+        <div class="admin-content">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h2>Add New Furniture Item</h2>
+                    <a href="admin-products.html" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Products
+                    </a>
+                </div>
+
+                <div class="admin-card-body">
+                    <form onsubmit="handleAddProductSubmit(event)">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                            
+                            <!-- Left Specs -->
+                            <div>
+                                <div class="form-group">
+                                    <label class="form-label">Product Name *</label>
+                                    <input type="text" id="prod-name" class="form-control" required placeholder="e.g. Florence Velvet Armchair">
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">Category *</label>
+                                        <select id="prod-category" class="form-control" required>
+                                            <!-- Loaded dynamically -->
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Associated Supplier</label>
+                                        <select id="prod-supplier" class="form-control">
+                                            <!-- Loaded dynamically -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">Price ($) *</label>
+                                        <input type="number" id="prod-price" class="form-control" required min="1" step="0.01" placeholder="1850">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Discount (%)</label>
+                                        <input type="number" id="prod-discount" class="form-control" min="0" max="90" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Stock Quantity *</label>
+                                        <input type="number" id="prod-stock" class="form-control" required min="0" placeholder="10">
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+                                    <div class="form-group">
+                                        <label class="form-label">Material Spec</label>
+                                        <input type="text" id="prod-material" class="form-control" placeholder="e.g. Italian Leather & Walnut Frame">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Dimensions</label>
+                                        <input type="text" id="prod-dimensions" class="form-control" placeholder="e.g. 34' W x 32' D x 30' H">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Color Option</label>
+                                        <input type="text" id="prod-color" class="form-control" placeholder="e.g. Cognac Brown">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="prod-desc" class="form-control" rows="5" placeholder="Detailed architectural and craft description..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Right Image Preview -->
+                            <div>
+                                <div class="form-group">
+                                    <label class="form-label">Image URL *</label>
+                                    <input type="url" id="prod-image" class="form-control" required placeholder="https://images.unsplash.com/..." onchange="updateImagePreview(this.value)">
+                                </div>
+                                <div style="aspect-ratio: 4/3; border-radius: var(--admin-radius); overflow: hidden; background: var(--admin-bg); border: 1px dashed var(--admin-border); display: flex; align-items: center; justify-content: center;">
+                                    <img id="image-preview" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <p style="font-size: 0.8rem; color: var(--admin-text-muted); margin-top: 0.5rem; text-align: center;">Paste a valid image link to update live preview.</p>
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
+                            <button type="submit" class="btn btn-accent btn-lg">
+                                <i class="fa-solid fa-floppy-disk"></i> Save & Publish Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            populateOptions();
+        });
+
+        function populateOptions() {
+            const catSelect = document.getElementById('prod-category');
+            const supSelect = document.getElementById('prod-supplier');
+
+            catSelect.innerHTML = db.getCategories().map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            supSelect.innerHTML = db.getSuppliers().map(s => `<option value="${s.id}">${s.name} (${s.company})</option>`).join('');
+        }
+
+        function updateImagePreview(url) {
+            if (url) document.getElementById('image-preview').src = url;
+        }
+
+        function handleAddProductSubmit(e) {
+            e.preventDefault();
+
+            const newProduct = {
+                id: 'prod-' + Date.now(),
+                name: document.getElementById('prod-name').value,
+                category: document.getElementById('prod-category').value,
+                supplierId: document.getElementById('prod-supplier').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                discount: parseFloat(document.getElementById('prod-discount').value) || 0,
+                stock: parseInt(document.getElementById('prod-stock').value),
+                material: document.getElementById('prod-material').value || 'Solid Hardwood',
+                dimensions: document.getElementById('prod-dimensions').value || 'Standard Spec',
+                color: document.getElementById('prod-color').value || 'Default Finish',
+                description: document.getElementById('prod-desc').value || 'Bespoke luxury piece.',
+                image: document.getElementById('prod-image').value,
+                rating: 5.0,
+                reviewCount: 0,
+                isFeatured: true
+            };
+
+            db.saveProduct(newProduct);
+            alert(`Product "${newProduct.name}" saved! It is now live on the Customer Shop page.`);
+            window.location.href = 'admin-products.html';
+        }
+    </script>
+</body>
+</html>

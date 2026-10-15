@@ -1,0 +1,36 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.Master.cs" Inherits="FurniShop.AdminMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FurniShop Admin Management Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <asp:ContentPlaceHolder ID="AdminHeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body class="admin-body">
+    <form id="formAdmin" runat="server">
+        <!-- Admin Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+        <div class="admin-main">
+            <!-- Admin Topbar -->
+            <header id="admin-topbar" class="admin-topbar"></header>
+
+            <div class="admin-content">
+                <asp:ContentPlaceHolder ID="AdminContent" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+        </div>
+
+        <script src="js/db.js"></script>
+        <script src="js/admin.js"></script>
+        <asp:ContentPlaceHolder ID="AdminScriptContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </form>
+</body>
+</html>

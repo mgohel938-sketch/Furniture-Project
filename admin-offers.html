@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers & Discounts - FurniShop Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+    <div class="admin-main">
+        <header id="admin-topbar" class="admin-topbar"></header>
+
+        <div class="admin-content">
+            <div style="display: grid; grid-template-columns: 1fr 380px; gap: 2rem;">
+                
+                <!-- Offers Table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h2>Active Promotional Offers</h2>
+                    </div>
+                    <div class="admin-card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Offer Name</th>
+                                        <th>Discount %</th>
+                                        <th>Target Category</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-offers-list">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Offer Form -->
+                <div class="admin-card" style="height: fit-content;">
+                    <div class="admin-card-header">
+                        <h2>Create Promotional Offer</h2>
+                    </div>
+                    <div class="admin-card-body">
+                        <form onsubmit="handleOfferSave(event)">
+                            <div class="form-group">
+                                <label class="form-label">Offer Name *</label>
+                                <input type="text" id="off-name" class="form-control" required placeholder="e.g. VIP Autumn Special">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Discount Percentage (%) *</label>
+                                <input type="number" id="off-discount" class="form-control" required min="1" max="90" placeholder="15">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Applicable Category *</label>
+                                <select id="off-category" class="form-control" required>
+                                    <!-- Loaded dynamically -->
+                                </select>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" id="off-start" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" id="off-end" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-accent btn-sm" style="width: 100%;">Create & Activate Offer</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCategories();
+            renderAdminOffers();
+            
+            // Default dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('off-start').value = today;
+        });
+
+        function populateCategories() {
+            const select = document.getElementById('off-category');
+            select.innerHTML = db.getCategories().map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+        }
+
+        function renderAdminOffers() {
+            const offers = db.getOffers();
+            const tbody = document.getElementById('admin-offers-list');
+            if (!tbody) return;
+
+            if (offers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 3rem;">No active promotional offers.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = offers.map(o => `
+                <tr>
+                    <td style="font-weight:700;">${o.name}</td>
+                    <td style="font-weight:800; color:var(--admin-accent);">${o.discount}% OFF</td>
+                    <td>${o.category}</td>
+                    <td style="font-size:0.8rem; color:var(--admin-text-muted);">${o.startDate} to ${o.endDate}</td>
+                    <td>${getStatusBadgeHtml(o.status)}</td>
+                    <td>
+                        <button onclick="deleteOfferAction('${o.id}')" class="btn-icon btn-icon-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function handleOfferSave(e) {
+            e.preventDefault();
+            const newOffer = {
+                id: 'off-' + Date.now(),
+                name: document.getElementById('off-name').value,
+                discount: parseFloat(document.getElementById('off-discount').value),
+                category: document.getElementById('off-category').value,
+                startDate: document.getElementById('off-start').value,
+                endDate: document.getElementById('off-end').value,
+                status: 'Active'
+            };
+
+            db.saveOffer(newOffer);
+
+            // Automatically apply offer discount to all products in that category
+            const products = db.getProducts();
+            products.forEach(p => {
+                if (p.category === newOffer.category) {
+                    p.discount = newOffer.discount;
+                }
+            });
+            db.set(DB_KEYS.PRODUCTS, products);
+
+            alert(`Offer "${newOffer.name}" created! Applied ${newOffer.discount}% discount to all "${newOffer.category}" products on the Customer Shop page.`);
+            renderAdminOffers();
+            document.getElementById('off-name').value = '';
+            document.getElementById('off-discount').value = '';
+        }
+
+        function deleteOfferAction(id) {
+            if (confirm('Delete this promotional offer?')) {
+                db.deleteOffer(id);
+                renderAdminOffers();
+            }
+        }
+    </script>
+</body>
+</html>

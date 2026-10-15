@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers - FurniShop Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+    <div class="admin-main">
+        <header id="admin-topbar" class="admin-topbar"></header>
+
+        <div class="admin-content">
+            <div style="display: grid; grid-template-columns: 1fr 360px; gap: 2rem;">
+                
+                <!-- Suppliers Table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h2>Supplier Directory & Artisanal Partners</h2>
+                    </div>
+                    <div class="admin-card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Contact Name</th>
+                                        <th>Company</th>
+                                        <th>Phone / Email</th>
+                                        <th>Location</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-suppliers-body">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Supplier Form -->
+                <div class="admin-card" style="height: fit-content;">
+                    <div class="admin-card-header">
+                        <h2 id="sup-form-title">Add New Supplier</h2>
+                    </div>
+                    <div class="admin-card-body">
+                        <form onsubmit="handleSupplierSave(event)">
+                            <input type="hidden" id="sup-id">
+
+                            <div class="form-group">
+                                <label class="form-label">Contact Name *</label>
+                                <input type="text" id="sup-name" class="form-control" required placeholder="e.g. Marco Bellini">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Company Name *</label>
+                                <input type="text" id="sup-company" class="form-control" required placeholder="e.g. Bellini Leather S.p.A">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" id="sup-phone" class="form-control" placeholder="+39 02 555-019">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="sup-email" class="form-control" placeholder="marco@bellini.it">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Address / Origin</label>
+                                <input type="text" id="sup-address" class="form-control" placeholder="Florence, Italy">
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="submit" class="btn btn-accent btn-sm" style="flex:1;">Save Supplier</button>
+                                <button type="button" onclick="resetSupForm()" class="btn btn-outline btn-sm">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminSuppliers();
+        });
+
+        function renderAdminSuppliers() {
+            const suppliers = db.getSuppliers();
+            const tbody = document.getElementById('admin-suppliers-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = suppliers.map(s => `
+                <tr>
+                    <td style="font-weight:700; color:var(--admin-accent); font-size:0.85rem;">${s.id}</td>
+                    <td style="font-weight:700;">${s.name}</td>
+                    <td>${s.company}</td>
+                    <td>
+                        <div>${s.phone || ''}</div>
+                        <div style="font-size:0.75rem; color:var(--admin-text-muted);">${s.email || ''}</div>
+                    </td>
+                    <td>${s.address || 'Europe'}</td>
+                    <td>
+                        <div class="action-btn-group">
+                            <button onclick="editSupplierAction('${s.id}')" class="btn-icon btn-icon-edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteSupplierAction('${s.id}', '${s.name}')" class="btn-icon btn-icon-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editSupplierAction(id) {
+            const s = db.getSuppliers().find(sup => sup.id === id);
+            if (!s) return;
+            document.getElementById('sup-form-title').textContent = 'Edit Supplier';
+            document.getElementById('sup-id').value = s.id;
+            document.getElementById('sup-name').value = s.name;
+            document.getElementById('sup-company').value = s.company;
+            document.getElementById('sup-phone').value = s.phone || '';
+            document.getElementById('sup-email').value = s.email || '';
+            document.getElementById('sup-address').value = s.address || '';
+        }
+
+        function resetSupForm() {
+            document.getElementById('sup-form-title').textContent = 'Add New Supplier';
+            document.getElementById('sup-id').value = '';
+            document.getElementById('sup-name').value = '';
+            document.getElementById('sup-company').value = '';
+            document.getElementById('sup-phone').value = '';
+            document.getElementById('sup-email').value = '';
+            document.getElementById('sup-address').value = '';
+        }
+
+        function handleSupplierSave(e) {
+            e.preventDefault();
+            const supplier = {
+                id: document.getElementById('sup-id').value || 'sup-' + Date.now(),
+                name: document.getElementById('sup-name').value,
+                company: document.getElementById('sup-company').value,
+                phone: document.getElementById('sup-phone').value,
+                email: document.getElementById('sup-email').value,
+                address: document.getElementById('sup-address').value
+            };
+            db.saveSupplier(supplier);
+            alert(`Supplier "${supplier.name}" saved! Available for product assignment.`);
+            resetSupForm();
+            renderAdminSuppliers();
+        }
+
+        function deleteSupplierAction(id, name) {
+            if (confirm(`Delete supplier "${name}"?`)) {
+                db.deleteSupplier(id);
+                renderAdminSuppliers();
+            }
+        }
+    </script>
+</body>
+</html>

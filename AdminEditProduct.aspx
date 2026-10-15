@@ -1,0 +1,167 @@
+<%@ Page Title="Edit Product - FurniShop Admin" Language="C#" MasterPageFile="~/Admin.Master" AutoEventWireup="true" CodeBehind="AdminEditProduct.aspx.cs" Inherits="FurniShop.AdminEditProduct" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="AdminHeadContent" runat="server">
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="AdminContent" runat="server">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Edit Furniture Product Details</h2>
+            <a href="AdminProducts.aspx" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i> Back to Products
+            </a>
+        </div>
+
+        <div class="admin-card-body">
+            <div id="edit-prod-form">
+                <input type="hidden" id="edit-prod-id">
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Product Name *</label>
+                            <input type="text" id="edit-prod-name" class="form-control" required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Category *</label>
+                                <select id="edit-prod-category" class="form-control" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Associated Supplier</label>
+                                <select id="edit-prod-supplier" class="form-control"></select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Price ($) *</label>
+                                <input type="number" id="edit-prod-price" class="form-control" required step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Discount (%)</label>
+                                <input type="number" id="edit-prod-discount" class="form-control" min="0" max="90">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Stock Quantity *</label>
+                                <input type="number" id="edit-prod-stock" class="form-control" required min="0">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Material Spec</label>
+                                <input type="text" id="edit-prod-material" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Dimensions</label>
+                                <input type="text" id="edit-prod-dimensions" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Color Option</label>
+                                <input type="text" id="edit-prod-color" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="edit-prod-desc" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Image URL *</label>
+                            <input type="url" id="edit-prod-image" class="form-control" required onchange="document.getElementById('edit-preview').src = this.value">
+                        </div>
+                        <div style="aspect-ratio: 4/3; border-radius: var(--admin-radius); overflow: hidden; background: var(--admin-bg); border: 1px solid var(--admin-border);">
+                            <img id="edit-preview" src="" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
+                    <button type="button" onclick="handleEditProductSubmit()" class="btn btn-accent btn-lg">
+                        <i class="fa-solid fa-pen-to-square"></i> Update Product Information
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="AdminScriptContent" runat="server">
+    <script>
+        let currentTargetProduct = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            loadEditProductData(productId);
+        });
+
+        function loadEditProductData(id) {
+            const prod = db.getProductById(id);
+            if (!prod) {
+                alert('Product not found!');
+                window.location.href = 'AdminProducts.aspx';
+                return;
+            }
+            currentTargetProduct = prod;
+
+            const catSelect = document.getElementById('edit-prod-category');
+            const supSelect = document.getElementById('edit-prod-supplier');
+
+            catSelect.innerHTML = db.getCategories().map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            supSelect.innerHTML = db.getSuppliers().map(s => `<option value="${s.id}">${s.name} (${s.company})</option>`).join('');
+
+            document.getElementById('edit-prod-id').value = prod.id;
+            document.getElementById('edit-prod-name').value = prod.name;
+            document.getElementById('edit-prod-category').value = prod.category;
+            document.getElementById('edit-prod-supplier').value = prod.supplierId || '';
+            document.getElementById('edit-prod-price').value = prod.price;
+            document.getElementById('edit-prod-discount').value = prod.discount || 0;
+            document.getElementById('edit-prod-stock').value = prod.stock;
+            document.getElementById('edit-prod-material').value = prod.material || '';
+            document.getElementById('edit-prod-dimensions').value = prod.dimensions || '';
+            document.getElementById('edit-prod-color').value = prod.color || '';
+            document.getElementById('edit-prod-desc').value = prod.description || '';
+            document.getElementById('edit-prod-image').value = prod.image;
+            document.getElementById('edit-preview').src = prod.image;
+        }
+
+        function handleEditProductSubmit() {
+            const name = document.getElementById('edit-prod-name').value;
+            const price = document.getElementById('edit-prod-price').value;
+            const stock = document.getElementById('edit-prod-stock').value;
+
+            if (!name || !price || !stock) {
+                alert('Please fill out required fields');
+                return;
+            }
+
+            const updatedProduct = {
+                ...currentTargetProduct,
+                name: name,
+                category: document.getElementById('edit-prod-category').value,
+                supplierId: document.getElementById('edit-prod-supplier').value,
+                price: parseFloat(price),
+                discount: parseFloat(document.getElementById('edit-prod-discount').value) || 0,
+                stock: parseInt(stock),
+                material: document.getElementById('edit-prod-material').value,
+                dimensions: document.getElementById('edit-prod-dimensions').value,
+                color: document.getElementById('edit-prod-color').value,
+                description: document.getElementById('edit-prod-desc').value,
+                image: document.getElementById('edit-prod-image').value
+            };
+
+            db.saveProduct(updatedProduct);
+            alert(`Product "${updatedProduct.name}" updated successfully! Changes reflect on the Customer Shop page.`);
+            window.location.href = 'AdminProducts.aspx';
+        }
+    </script>
+</asp:Content>

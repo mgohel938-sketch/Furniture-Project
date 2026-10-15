@@ -1,0 +1,7 @@
+/.vs/
+/bin/
+/obj/
+*.user
+*.suo
+/App_Data/*.mdf
+/App_Data/*.ldf

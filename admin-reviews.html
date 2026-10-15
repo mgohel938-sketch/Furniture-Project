@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews - FurniShop Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside id="admin-sidebar" class="admin-sidebar"></aside>
+
+    <div class="admin-main">
+        <header id="admin-topbar" class="admin-topbar"></header>
+
+        <div class="admin-content">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h2>Customer Product Review Moderation</h2>
+                </div>
+
+                <div class="admin-card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Moderation Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reviews-list">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/db.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminReviews();
+        });
+
+        function renderAdminReviews() {
+            const reviews = db.getReviews();
+            const products = db.getProducts();
+            const tbody = document.getElementById('admin-reviews-list');
+            if (!tbody) return;
+
+            if (reviews.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 3rem;">No customer reviews submitted yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = reviews.map(r => {
+                const prod = products.find(p => p.id === r.productId);
+                const prodName = prod ? prod.name : r.productId;
+                return `
+                    <tr>
+                        <td style="font-weight:700;">${r.customerName}</td>
+                        <td style="font-size:0.85rem; max-width: 180px;">${prodName}</td>
+                        <td style="color:#eab308; white-space:nowrap;">
+                            ${'<i class="fa-solid fa-star"></i>'.repeat(r.rating)}
+                        </td>
+                        <td style="font-size:0.85rem; max-width: 300px; color: var(--admin-text-muted);">${r.comment}</td>
+                        <td style="font-size:0.8rem;">${r.date}</td>
+                        <td>${getStatusBadgeHtml(r.status)}</td>
+                        <td>
+                            <div class="action-btn-group">
+                                ${r.status !== 'Approved' ? `<button onclick="setReviewStatusAction('${r.id}', 'Approved')" class="btn btn-outline btn-sm" style="color:green;"><i class="fa-solid fa-check"></i> Approve</button>` : ''}
+                                ${r.status !== 'Hidden' ? `<button onclick="setReviewStatusAction('${r.id}', 'Hidden')" class="btn btn-outline btn-sm" style="color:orange;"><i class="fa-solid fa-eye-slash"></i> Hide</button>` : ''}
+                                <button onclick="deleteReviewAction('${r.id}')" class="btn-icon btn-icon-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function setReviewStatusAction(id, status) {
+            db.updateReviewStatus(id, status);
+            alert(`Review status set to "${status}". Only approved reviews show on product pages.`);
+            renderAdminReviews();
+        }
+
+        function deleteReviewAction(id) {
+            if (confirm('Delete this review permanently?')) {
+                db.deleteReview(id);
+                renderAdminReviews();
+            }
+        }
+    </script>
+</body>
+</html>
