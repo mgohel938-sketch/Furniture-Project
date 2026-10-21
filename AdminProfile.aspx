@@ -9,43 +9,29 @@
             <h2>Super Admin Account Credentials</h2>
         </div>
         <div class="admin-card-body">
-            <div id="admin-prof-form">
-                <div class="form-group">
-                    <label class="form-label">Admin Name</label>
-                    <input type="text" id="admin-prof-name" class="form-control" required value="Admin Manager">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" id="admin-prof-email" class="form-control" required value="admin@furnishop.com">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" id="admin-prof-pass" class="form-control" required value="admin123">
-                </div>
-
-                <button type="button" onclick="handleAdminProfileUpdate()" class="btn btn-accent btn-lg" style="width: 100%;">Update Admin Profile</button>
+            <div style="margin-bottom: 1rem;">
+                <asp:Label ID="lblMsg" runat="server" Font-Bold="true"></asp:Label>
             </div>
+
+            <div class="form-group">
+                <label class="form-label">Admin Name</label>
+                <asp:TextBox ID="txtAdminName" runat="server" CssClass="form-control" Text="Admin Manager"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <asp:TextBox ID="txtAdminEmail" runat="server" CssClass="form-control" Text="admin@furnishop.com"></asp:TextBox>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <asp:TextBox ID="txtAdminPass" runat="server" TextMode="Password" CssClass="form-control" Text="admin123"></asp:TextBox>
+            </div>
+
+            <asp:Button ID="btnUpdateAdmin" runat="server" Text="Update Admin Profile" OnClick="btnUpdateAdmin_Click" CssClass="btn btn-accent btn-lg" style="width: 100%;" />
         </div>
     </div>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="AdminScriptContent" runat="server">
-    <script>
-        function handleAdminProfileUpdate() {
-            const name = document.getElementById('admin-prof-name').value;
-            const email = document.getElementById('admin-prof-email').value;
-
-            if (!name || !email) {
-                alert('Please enter name and email');
-                return;
-            }
-
-            const session = { name, email, role: 'Super Admin' };
-            localStorage.setItem(DB_KEYS.ADMIN_SESSION, JSON.stringify(session));
-            alert('Admin Profile updated successfully!');
-            renderAdminTopbar();
-        }
-    </script>
 </asp:Content>

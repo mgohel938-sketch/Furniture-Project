@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Price ($) *</label>
+                                <label class="form-label">Price (₹) *</label>
                                 <asp:TextBox ID="txtPrice" runat="server" TextMode="Number" step="0.01" CssClass="form-control" placeholder="1850" required="required"></asp:TextBox>
                             </div>
                         </div>

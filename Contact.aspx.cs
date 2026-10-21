@@ -1,49 +1,57 @@
 using System;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Web.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Data;
+using System.Configuration;
 
 namespace FurniShop
 {
-    public partial class Contact : Page
+    public partial class Contact : System.Web.UI.Page
     {
+        protected Label lblMsg;
+        protected TextBox txtName;
+        protected TextBox txtEmail;
+        protected TextBox txtSubject;
+        protected TextBox txtMessage;
+        protected Button btnSubmit;
+
+        SqlConnection con;
+        SqlCommand cmd;
+        SqlDataAdapter da;
+        DataSet ds;
+
+        string s = ConfigurationManager.ConnectionStrings["dbcon"].ConnectionString;
+
+        void getcon()
+        {
+            con = new SqlConnection(s);
+            con.Open();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
         }
 
-        [WebMethod]
-        public static bool SaveContactToDB(string name, string email, string subject, string message)
+        void clear()
         {
-            string cs = ConfigurationManager.ConnectionStrings["FurniShopConnection"]?.ConnectionString;
-            if (string.IsNullOrEmpty(cs)) return false;
+            txtName.Text = "";
+            txtEmail.Text = "";
+            txtSubject.Text = "";
+            txtMessage.Text = "";
+        }
 
-            try
-            {
-                using (SqlConnection con = new SqlConnection(cs))
-                {
-                    string query = @"INSERT INTO Contact (Name, Email, Subject, Message, SubmittedDate)
-                                    VALUES (@Name, @Email, @Subject, @Message, @SubmittedDate)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@Name", name ?? "");
-                        cmd.Parameters.AddWithValue("@Email", email ?? "");
-                        cmd.Parameters.AddWithValue("@Subject", subject ?? "");
-                        cmd.Parameters.AddWithValue("@Message", message ?? "");
-                        cmd.Parameters.AddWithValue("@SubmittedDate", DateTime.Now);
-
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error saving contact: " + ex.Message);
-                return false;
-            }
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            getcon();
+            cmd = new SqlCommand("insert into Contact(Name,Email,Subject,Message,SubmittedDate) values('" + txtName.Text + "', '" + txtEmail.Text + "', '" + txtSubject.Text + "', '" + txtMessage.Text + "', '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')", con);
+            cmd.ExecuteNonQuery();
+            clear();
+            lblMsg.Text = "Thank you! Your message has been sent successfully.";
+            lblMsg.ForeColor = System.Drawing.Color.Green;
         }
     }
 }

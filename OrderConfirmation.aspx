@@ -5,120 +5,57 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <main>
-        <div class="container" style="padding: 4rem 0 6rem; max-width: 900px;">
-            <div id="confirmation-wrap">
+        <div class="container" style="padding: 4rem 0 6rem; max-width: 800px;">
+            <div style="background: var(--clr-bg-card); padding: 3rem; border-radius: var(--radius-lg); border: 1px solid var(--clr-border); box-shadow: var(--shadow-md); text-align: center;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(46, 125, 50, 0.1); color: var(--clr-success); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Thank You! Your Order Has Been Placed</h1>
+                <p style="color: var(--clr-text-muted); font-size: 1.05rem; margin-bottom: 2rem;">
+                    We are processing your order and preparing your furniture.
+                </p>
+
+                <div style="background: var(--clr-bg-alt); padding: 2rem; border-radius: var(--radius-md); text-align: left; margin-bottom: 2.5rem; border: 1px solid var(--clr-border);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--clr-text-muted); font-weight: 700;">Order ID:</div>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--clr-accent);">
+                                #<asp:Label ID="lblOrderId" runat="server"></asp:Label>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--clr-text-muted); font-weight: 700;">Order Date:</div>
+                            <div style="font-size: 1.1rem; font-weight: 700;">
+                                <asp:Label ID="lblOrderDate" runat="server"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--clr-text-muted); font-weight: 700;">Customer Name:</div>
+                            <div style="font-size: 1.1rem; font-weight: 600;">
+                                <asp:Label ID="lblCustomerName" runat="server"></asp:Label>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--clr-text-muted); font-weight: 700;">Total Amount:</div>
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--clr-success);">
+                                &#8377;<asp:Label ID="lblTotalPrice" runat="server"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="Shop.aspx" class="btn btn-primary btn-lg">Continue Shopping</a>
+                    <a href="MyOrders.aspx" class="btn btn-outline btn-lg">View My Orders</a>
+                </div>
             </div>
         </div>
     </main>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptContent" runat="server">
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const orderId = urlParams.get('id');
-            renderConfirmation(orderId);
-        });
-
-        function renderConfirmation(orderId) {
-            const orders = db.getOrders();
-            const order = orders.find(o => o.id === orderId) || orders[0];
-            const container = document.getElementById('confirmation-wrap');
-            if (!container) return;
-
-            if (!order) {
-                container.innerHTML = `
-                    <div style="text-align:center; padding: 4rem;">
-                        <h2>Order Not Found</h2>
-                        <a href="Shop.aspx" class="btn btn-primary">Return to Shop</a>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = `
-                <div style="background: var(--clr-bg-card); padding: 3rem; border-radius: var(--radius-lg); border: 1px solid var(--clr-border); box-shadow: var(--shadow-md); text-align: center;">
-                    
-                    <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(46, 125, 50, 0.1); color: var(--clr-success); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem;">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-
-                    <span class="section-subtitle">Thank You For Choosing FurniShop</span>
-                    <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Your Order Has Been Placed!</h1>
-                    <p style="color: var(--clr-text-muted); font-size: 1.05rem; margin-bottom: 2rem;">
-                        We have sent a detailed white-glove receipt to <strong>${order.customerEmail}</strong>.
-                    </p>
-
-                    <div style="background: var(--clr-bg-alt); padding: 2rem; border-radius: var(--radius-md); text-align: left; margin-bottom: 2.5rem; border: 1px solid var(--clr-border);">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--clr-border);">
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700;">Order ID</div>
-                                <div style="font-size: 1.2rem; font-weight: 800; color: var(--clr-accent);">${order.id}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700;">Date Placed</div>
-                                <div style="font-size: 1.1rem; font-weight: 700;">${order.date}</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700;">Payment Method</div>
-                                <div style="font-size: 1.1rem; font-weight: 700;">${order.paymentMethod} (${order.paymentStatus})</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700;">Order Status</div>
-                                <div style="font-size: 1.1rem; font-weight: 700; color: var(--clr-warning);">${order.orderStatus}</div>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 1.5rem;">
-                            <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700; margin-bottom: 0.35rem;">Delivery Destination</div>
-                            <div style="font-weight: 600;">${order.customerName}</div>
-                            <div style="color: var(--clr-text-muted); font-size:0.9rem;">${order.shippingAddress}</div>
-                            <div style="color: var(--clr-text-muted); font-size:0.9rem;">Phone: ${order.customerPhone}</div>
-                        </div>
-
-                        <div style="font-size: 0.8rem; color: var(--clr-text-muted); text-transform: uppercase; font-weight:700; margin-bottom: 0.75rem;">Items Summary</div>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            ${order.items.map(item => `
-                                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--clr-border); padding-bottom: 0.5rem;">
-                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <img src="${item.image}" alt="${item.name}" style="width: 45px; height: 35px; border-radius: 4px; object-fit: cover;">
-                                        <div>
-                                            <div style="font-weight: 700; font-size: 0.9rem;">${item.name}</div>
-                                            <div style="font-size: 0.75rem; color: var(--clr-text-muted);">Qty: ${item.quantity} x ${formatPrice(item.price)}</div>
-                                        </div>
-                                    </div>
-                                    <div style="font-weight: 700;">${formatPrice(item.price * item.quantity)}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Subtotal:</span>
-                                <span style="font-weight:700;">${formatPrice(order.subtotal)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Tax & Duties:</span>
-                                <span style="font-weight:700;">${formatPrice(order.tax)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>White-Glove Delivery:</span>
-                                <span style="font-weight:700;">${formatPrice(order.delivery)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; border-top: 2px solid var(--clr-border); padding-top: 0.75rem; color: var(--clr-text-main);">
-                                <span>Total Paid:</span>
-                                <span style="color: var(--clr-accent);">${formatPrice(order.total)}</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="MyOrders.aspx" class="btn btn-primary"><i class="fa-solid fa-box"></i> View My Orders</a>
-                        <a href="Shop.aspx" class="btn btn-outline">Continue Shopping</a>
-                    </div>
-                </div>
-            `;
-        }
-    </script>
 </asp:Content>

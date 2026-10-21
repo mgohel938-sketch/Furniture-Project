@@ -13,18 +13,103 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <!-- Customer Header injected by js/main.js -->
-        <header id="main-header"></header>
+        <header class="header">
+            <div class="header-top">
+                <div class="container header-top-inner">
+                    <div class="header-contact-info">
+                        <span><i class="fa-solid fa-phone"></i> +1 (800) 458-7647</span>
+                        <span><i class="fa-solid fa-envelope"></i> concierge@furnishop.com</span>
+                    </div>
+                    <div class="header-top-links">
+                        <a href="About.aspx">About Us</a>
+                        <a href="Services.aspx">Services</a>
+                        <a href="Contact.aspx">Contact</a>
+                        <a href="AdminLogin.aspx" style="color: var(--clr-accent); font-weight:600;"><i class="fa-solid fa-lock"></i> Admin Portal</a>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar">
+                <div class="container nav-container">
+                    <a href="Index.aspx" class="brand-logo">
+                        <i class="fa-solid fa-couch"></i> Furni<span>Shop</span>
+                    </a>
+                    <ul class="nav-links">
+                        <li><a href="Index.aspx" class="nav-link">Home</a></li>
+                        <li><a href="Shop.aspx" class="nav-link">Shop</a></li>
+                        <li><a href="Categories.aspx" class="nav-link">Categories</a></li>
+                        <li><a href="About.aspx" class="nav-link">About</a></li>
+                        <li><a href="Services.aspx" class="nav-link">Services</a></li>
+                        <li><a href="Contact.aspx" class="nav-link">Contact</a></li>
+                    </ul>
+                    <div class="nav-actions">
+                        <a href="Cart.aspx" class="nav-icon-btn" title="Shopping Cart">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </a>
+                        <a href="MyOrders.aspx" class="nav-icon-btn" title="My Orders">
+                            <i class="fa-solid fa-box"></i>
+                        </a>
+                        <a href="Profile.aspx" class="nav-icon-btn" title="Account">
+                            <i class="fa-regular fa-user"></i>
+                        </a>
+                        <% if (Session["user"] != null) { %>
+                            <span style="font-weight: 600; font-size: 0.9rem; color: var(--clr-accent);">Hi, <%= Session["user"].ToString().Split('@')[0] %></span>
+                            <a href="Profile.aspx" class="btn btn-outline btn-sm">Profile</a>
+                        <% } else { %>
+                            <a href="Login.aspx" class="btn btn-primary btn-sm">Sign In</a>
+                            <a href="Register.aspx" class="btn btn-outline btn-sm">Register</a>
+                        <% } %>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
         <!-- Dynamic Page Content -->
         <asp:ContentPlaceHolder ID="MainContent" runat="server">
         </asp:ContentPlaceHolder>
 
-        <!-- Customer Footer injected by js/main.js -->
-        <footer id="main-footer" class="footer"></footer>
+        <footer class="footer">
+            <div class="container footer-grid">
+                <div class="footer-brand">
+                    <a href="Index.aspx" class="brand-logo" style="color: #ffffff;">
+                        <i class="fa-solid fa-couch"></i> Furni<span>Shop</span>
+                    </a>
+                    <p>Curating bespoke, luxury furniture for world-class architectural spaces. Designed with passion, crafted with perfection.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore Collections</h4>
+                    <ul>
+                        <li><a href="Shop.aspx?category=Sofa">Italian Leather Sofas</a></li>
+                        <li><a href="Shop.aspx?category=Bed">Velvet Bed Frames</a></li>
+                        <li><a href="Shop.aspx?category=Table">Marble Coffee Tables</a></li>
+                        <li><a href="Shop.aspx?category=Dining">Solid Walnut Dining</a></li>
+                        <li><a href="Shop.aspx?category=Chair">Lounge & Armchairs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="Services.aspx">White-Glove Delivery</a></li>
+                        <li><a href="MyOrders.aspx">Track Order Status</a></li>
+                        <li><a href="Contact.aspx">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Admin Management</h4>
+                    <ul>
+                        <li><a href="AdminLogin.aspx"><i class="fa-solid fa-lock"></i> Admin Portal</a></li>
+                        <li><a href="AdminDashboard.aspx">Dashboard</a></li>
+                        <li><a href="AdminProducts.aspx">Product Catalog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="container footer-bottom">
+                <div>&copy; 2026 FurniShop. All rights reserved.</div>
+                <div>
+                    <a href="AdminLogin.aspx" style="color: var(--clr-accent); margin-right: 1.5rem;"><i class="fa-solid fa-lock"></i> Admin Portal</a>
+                </div>
+            </div>
+        </footer>
 
-        <script src="js/db.js"></script>
-        <script src="js/main.js?v=3"></script>
         <asp:ContentPlaceHolder ID="ScriptContent" runat="server">
         </asp:ContentPlaceHolder>
     </form>

@@ -24,52 +24,28 @@
                 </div>
 
                 <div id="admin-login-form">
+                    <div style="margin-bottom: 1rem; text-align: center;">
+                        <asp:Label ID="lblMsg" runat="server" Font-Bold="true" ForeColor="Red"></asp:Label>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Admin Email</label>
-                        <input type="email" id="admin-email" class="form-control" required placeholder="admin@furnishop.com">
+                        <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" placeholder="admin@furnishop.com"></asp:TextBox>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Admin Password</label>
-                        <input type="password" id="admin-pass" class="form-control" required placeholder="••••••••">
+                        <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" placeholder="••••••••"></asp:TextBox>
                     </div>
 
-                    <button type="button" onclick="handleAdminLoginSubmit()" class="btn btn-accent btn-lg" style="width: 100%; margin-bottom: 1rem;">
-                        Access Dashboard <i class="fa-solid fa-right-to-bracket"></i>
-                    </button>
+                    <asp:Button ID="btnLogin" runat="server" Text="Access Dashboard" OnClick="btnLogin_Click" CssClass="btn btn-accent btn-lg" style="width: 100%; margin-top: 1rem;" />
 
-                    <button type="button" onclick="fillDemoAdmin()" class="btn btn-outline btn-sm" style="width: 100%;">
-                        <i class="fa-solid fa-key"></i> Fill Demo Admin Credentials
-                    </button>
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <a href="Index.aspx" style="color: var(--admin-accent); font-size: 0.9rem;"><i class="fa-solid fa-arrow-left"></i> Return to Storefront</a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <script src="js/db.js"></script>
-        <script src="js/admin.js"></script>
-        <script>
-            function fillDemoAdmin() {
-                document.getElementById('admin-email').value = 'admin@furnishop.com';
-                document.getElementById('admin-pass').value = 'admin123';
-            }
-
-            function handleAdminLoginSubmit() {
-                const email = document.getElementById('admin-email').value;
-                const pass = document.getElementById('admin-pass').value;
-
-                if (!email || !pass) {
-                    alert('Please enter email and password');
-                    return;
-                }
-
-                const res = db.loginAdmin(email, pass);
-                if (res.success) {
-                    window.location.href = 'AdminDashboard.aspx';
-                } else {
-                    alert(res.message);
-                }
-            }
-        </script>
     </form>
 </body>
 </html>

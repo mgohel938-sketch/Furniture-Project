@@ -56,7 +56,6 @@
     </Content>
     <Content Include="css\styles.css" />
     <Content Include="css\admin.css" />
-    <Content Include="js\db.js" />
     <Content Include="js\main.js" />
     <Content Include="js\admin.js" />
     <Content Include="Customer.Master" />

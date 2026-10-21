@@ -15,159 +15,86 @@
         </div>
 
         <div class="container" style="padding-bottom: 6rem;">
-            <div id="cart-container">
+            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 3rem;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3>Cart Items</h3>
+                        <asp:Button ID="btnClearCart" runat="server" Text="Clear Cart" OnClick="btnClearCart_Click" CssClass="btn btn-outline btn-sm" ForeColor="Red" />
+                    </div>
+
+                    <div class="table-responsive">
+                        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="table" DataKeyNames="cart_id" OnRowDeleting="GridView1_RowDeleting" GridLines="None">
+                            <Columns>
+                                <asp:TemplateField HeaderText="Product">
+                                    <ItemTemplate>
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            <asp:Image ID="imgProd" runat="server" ImageUrl='<%# Eval("ImageUrl") %>' Width="70px" Height="55px" style="object-fit: cover; border-radius: 4px;" />
+                                            <div>
+                                                <a href='ProductDetails.aspx?pid=<%# Eval("cart_prod_id") %>' style="font-weight: 700; color: var(--clr-text-main);">
+                                                    <%# Eval("ProductName") %>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Price">
+                                    <ItemTemplate>
+                                        &#8377;<%# Eval("Price") %>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Quantity">
+                                    <ItemTemplate>
+                                        <%# Eval("qunty") %>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Total">
+                                    <ItemTemplate>
+                                        <strong>&#8377;<%# Convert.ToDecimal(Eval("Price")) * Convert.ToInt32(Eval("qunty")) %></strong>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Action">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="lnkDelete" runat="server" CommandName="Delete" Text="Remove" CssClass="btn btn-outline btn-sm" ForeColor="Red" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                            <EmptyDataTemplate>
+                                <div style="text-align: center; padding: 3rem;">
+                                    <h3>Your Cart is Empty</h3>
+                                    <p style="color: var(--clr-text-muted); margin-bottom: 1rem;">Browse our collection and add furniture pieces.</p>
+                                    <a href="Shop.aspx" class="btn btn-primary">Go to Shop</a>
+                                </div>
+                            </EmptyDataTemplate>
+                        </asp:GridView>
+                    </div>
+                </div>
+
+                <!-- Order Summary Sidebar -->
+                <div>
+                    <div style="background: var(--clr-bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--clr-border);">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--clr-border);">Order Summary</h3>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.1rem;">
+                            <span>Grand Total:</span>
+                            <asp:Label ID="lblGrandTotal" runat="server" Font-Bold="true" style="color: var(--clr-accent);" Text="&#8377;0.00"></asp:Label>
+                        </div>
+
+                        <a href="Checkout.aspx" class="btn btn-primary btn-lg" style="width: 100%; text-align: center; display: block; margin-top: 1.5rem;">
+                            Proceed to Checkout
+                        </a>
+                        <a href="Shop.aspx" class="btn btn-outline btn-sm" style="width: 100%; text-align: center; display: block; margin-top: 0.75rem;">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptContent" runat="server">
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCartPage();
-        });
-
-        function renderCartPage() {
-            const cart = db.getCart();
-            const container = document.getElementById('cart-container');
-            if (!container) return;
-
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 4rem 1rem;">
-                        <i class="fa-solid fa-bag-shopping" style="font-size: 4rem; color: var(--clr-text-light); margin-bottom: 1.5rem;"></i>
-                        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Your Shopping Bag is Empty</h2>
-                        <p style="color: var(--clr-text-muted); margin-bottom: 2rem;">Explore our high-end furniture collections and select pieces to add.</p>
-                        <a href="Shop.aspx" class="btn btn-primary btn-lg">Browse Collections</a>
-                    </div>
-                `;
-                return;
-            }
-
-            const settings = db.getSettings();
-            let subtotal = 0;
-
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-
-            const taxAmount = (subtotal * settings.taxRate) / 100;
-            const deliveryCharge = settings.deliveryCharge;
-            const grandTotal = subtotal + taxAmount + deliveryCharge;
-
-            container.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 360px; gap: 3rem;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h3>Cart Items (${cart.length})</h3>
-                            <button type="button" onclick="clearAllCart()" class="btn btn-outline btn-sm" style="color: var(--clr-danger); border-color: var(--clr-border);">
-                                <i class="fa-solid fa-trash"></i> Clear Cart
-                            </button>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Subtotal</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${cart.map(item => {
-                                        const itemTotal = item.price * item.quantity;
-                                        return `
-                                            <tr>
-                                                <td>
-                                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                                        <img src="${item.image}" alt="${item.name}" style="width: 70px; height: 55px; border-radius: var(--radius-sm); object-fit: cover;">
-                                                        <div>
-                                                            <a href="ProductDetails.aspx?id=${item.productId}" style="font-weight: 700; color: var(--clr-text-main);">${item.name}</a>
-                                                            <div style="font-size: 0.75rem; color: var(--clr-text-muted);">${item.category}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td style="font-weight: 600;">${formatPrice(item.price)}</td>
-                                                <td>
-                                                    <div style="display: flex; align-items: center; border: 1px solid var(--clr-border); border-radius: var(--radius-sm); width: fit-content;">
-                                                        <button type="button" onclick="updateQty('${item.productId}', ${item.quantity - 1})" style="padding: 0.25rem 0.6rem;">-</button>
-                                                        <span style="padding: 0.25rem 0.6rem; font-weight:700;">${item.quantity}</span>
-                                                        <button type="button" onclick="updateQty('${item.productId}', ${item.quantity + 1})" style="padding: 0.25rem 0.6rem;">+</button>
-                                                    </div>
-                                                </td>
-                                                <td style="font-weight: 700; color: var(--clr-accent);">${formatPrice(itemTotal)}</td>
-                                                <td>
-                                                    <button type="button" onclick="removeItem('${item.productId}')" style="color: var(--clr-danger); font-size: 1.1rem; background:none; border:none; cursor:pointer;" title="Remove">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div style="margin-top: 2rem;">
-                            <a href="Shop.aspx" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Continue Shopping</a>
-                        </div>
-                    </div>
-
-                    <div style="background: var(--clr-bg-card); padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--clr-border); height: fit-content; box-shadow: var(--shadow-sm);">
-                        <h3 style="font-size: 1.35rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--clr-border);">Order Summary</h3>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.95rem; margin-bottom: 1.5rem;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Bag Subtotal:</span>
-                                <span style="font-weight: 700;">${formatPrice(subtotal)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Estimated Tax (${settings.taxRate}%):</span>
-                                <span style="font-weight: 700;">${formatPrice(taxAmount)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>White-Glove Delivery:</span>
-                                <span style="font-weight: 700;">${formatPrice(deliveryCharge)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; border-top: 2px solid var(--clr-border); padding-top: 1rem; color: var(--clr-text-main);">
-                                <span>Grand Total:</span>
-                                <span style="color: var(--clr-accent);">${formatPrice(grandTotal)}</span>
-                            </div>
-                        </div>
-
-                        <a href="Checkout.aspx" class="btn btn-accent btn-lg" style="width: 100%;">
-                            Proceed to Checkout <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-
-                        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--clr-text-muted);">
-                            <i class="fa-solid fa-shield-halved"></i> 256-bit Encrypted SSL Checkout
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateQty(productId, newQty) {
-            db.updateCartQuantity(productId, newQty);
-            renderCartPage();
-            updateBadges();
-        }
-
-        function removeItem(productId) {
-            db.removeFromCart(productId);
-            renderCartPage();
-            updateBadges();
-            showToast('Item removed from shopping bag', 'info');
-        }
-
-        function clearAllCart() {
-            db.clearCart();
-            renderCartPage();
-            updateBadges();
-            showToast('Shopping bag cleared', 'info');
-        }
-    </script>
 </asp:Content>

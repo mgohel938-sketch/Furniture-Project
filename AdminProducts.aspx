@@ -13,114 +13,52 @@
         </div>
 
         <div style="padding: 1.25rem 1.75rem; background: #fafafa; border-bottom: 1px solid var(--admin-border); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-            <div style="flex-grow: 1; max-width: 350px;">
-                <input type="text" id="admin-product-search" class="form-control" placeholder="Search product name or ID..." onkeyup="filterAdminProducts()">
+            <div style="flex-grow: 1; max-width: 350px; display: flex; gap: 0.5rem;">
+                <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Search product name..."></asp:TextBox>
+                <asp:Button ID="btnSearch" runat="server" Text="Search" OnClick="btnSearch_Click" CssClass="btn btn-accent btn-sm" />
             </div>
             <div>
-                <select id="admin-product-category" class="form-control" onchange="filterAdminProducts()">
-                    <option value="All">All Categories</option>
-                </select>
+                <asp:DropDownList ID="ddlCategory" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged" CssClass="form-control">
+                    <asp:ListItem Text="All Categories" Value="All"></asp:ListItem>
+                    <asp:ListItem Text="Sofa" Value="Sofa"></asp:ListItem>
+                    <asp:ListItem Text="Bed" Value="Bed"></asp:ListItem>
+                    <asp:ListItem Text="Chair" Value="Chair"></asp:ListItem>
+                    <asp:ListItem Text="Table" Value="Table"></asp:ListItem>
+                    <asp:ListItem Text="Dining" Value="Dining"></asp:ListItem>
+                    <asp:ListItem Text="Wardrobe" Value="Wardrobe"></asp:ListItem>
+                </asp:DropDownList>
             </div>
         </div>
 
         <div class="admin-card-body" style="padding: 0;">
             <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock Qty</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-products-list">
-                    </tbody>
-                </table>
+                <asp:GridView ID="GridViewProducts" runat="server" AutoGenerateColumns="False" CssClass="table" DataKeyNames="Id" OnRowDeleting="GridViewProducts_RowDeleting" GridLines="None">
+                    <Columns>
+                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                        <asp:TemplateField HeaderText="Image">
+                            <ItemTemplate>
+                                <asp:Image ID="imgProd" runat="server" ImageUrl='<%# Eval("ImageUrl") %>' Width="60px" Height="45px" style="object-fit:cover; border-radius:4px;" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField DataField="ProductName" HeaderText="Product Name" />
+                        <asp:BoundField DataField="Category" HeaderText="Category" />
+                        <asp:BoundField DataField="Price" HeaderText="Price (Rs.)" />
+                        <asp:BoundField DataField="Stock" HeaderText="Stock" />
+                        <asp:TemplateField HeaderText="Actions">
+                            <ItemTemplate>
+                                <a href='AdminEditProduct.aspx?id=<%# Eval("Id") %>' class="btn btn-outline btn-sm">Edit</a>
+                                <asp:LinkButton ID="btnDelete" runat="server" CommandName="Delete" Text="Delete" CssClass="btn btn-outline btn-sm" ForeColor="Red" OnClientClick="return confirm('Are you sure you want to delete this product?');" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <div style="text-align: center; padding: 2.5rem;">No products found in catalog.</div>
+                    </EmptyDataTemplate>
+                </asp:GridView>
             </div>
         </div>
     </div>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="AdminScriptContent" runat="server">
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            populateCategoryDropdown();
-            renderAdminProducts();
-        });
-
-        function populateCategoryDropdown() {
-            const select = document.getElementById('admin-product-category');
-            if (!select) return;
-            const categories = db.getCategories();
-            categories.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.name;
-                opt.textContent = c.name;
-                select.appendChild(opt);
-            });
-        }
-
-        function filterAdminProducts() {
-            const query = document.getElementById('admin-product-search').value.toLowerCase();
-            const category = document.getElementById('admin-product-category').value;
-            renderAdminProducts(query, category);
-        }
-
-        function renderAdminProducts(query = '', catFilter = 'All') {
-            let products = db.getProducts();
-            const tbody = document.getElementById('admin-products-list');
-            if (!tbody) return;
-
-            if (query) {
-                products = products.filter(p => p.name.toLowerCase().includes(query) || p.id.toLowerCase().includes(query));
-            }
-            if (catFilter !== 'All') {
-                products = products.filter(p => p.category === catFilter);
-            }
-
-            if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 3rem;">No furniture products found.</td></tr>`;
-                return;
-            }
-
-            const settings = db.getSettings();
-
-            tbody.innerHTML = products.map(p => `
-                <tr>
-                    <td style="font-weight:700; color:var(--admin-accent); font-size: 0.85rem;">${p.id}</td>
-                    <td>
-                        <img src="${p.image}" alt="${p.name}" style="width: 50px; height: 40px; border-radius: 4px; object-fit: cover;">
-                    </td>
-                    <td style="font-weight: 700;">${p.name}</td>
-                    <td>${p.category}</td>
-                    <td style="font-weight: 700;">${settings.currency}${p.price}</td>
-                    <td style="font-weight: 700;">${p.stock}</td>
-                    <td>
-                        <span class="status-badge ${p.stock <= 0 ? 'outstock' : (p.stock <= settings.lowStockLimit ? 'lowstock' : 'instock')}">
-                            ${p.stock <= 0 ? 'Out of Stock' : (p.stock <= settings.lowStockLimit ? 'Low Stock' : 'In Stock')}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-btn-group">
-                            <a href="AdminEditProduct.aspx?id=${p.id}" class="btn-icon btn-icon-edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
-                            <button type="button" onclick="confirmDeleteProduct('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="btn-icon btn-icon-delete" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function confirmDeleteProduct(id, name) {
-            if (confirm(`Are you sure you want to permanently delete "${name}"?\nThis will automatically remove it from the Customer Shop page.`)) {
-                db.deleteProduct(id);
-                renderAdminProducts();
-                alert(`Product "${name}" deleted successfully.`);
-            }
-        }
-    </script>
 </asp:Content>

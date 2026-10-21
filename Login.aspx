@@ -14,21 +14,21 @@
                 </div>
 
                 <div id="login-form">
+                    <div style="margin-bottom: 1rem; text-align: center;">
+                        <asp:Label ID="lblMessage" runat="server" Font-Bold="true" ForeColor="Red"></asp:Label>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" id="login-email" class="form-control" required placeholder="eleanor@example.com">
+                        <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" placeholder="milan@example.com"></asp:TextBox>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+                        <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="form-control" placeholder=" enter password"></asp:TextBox>
                     </div>
 
-                    <button type="button" onclick="handleCustomerLogin()" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1rem;">Sign In</button>
-                    
-                    <button type="button" onclick="fillDemoCustomer()" class="btn btn-outline btn-sm" style="width: 100%; margin-bottom: 1.5rem;">
-                        <i class="fa-solid fa-user-check"></i> Fill Demo Customer Credentials
-                    </button>
+                    <asp:Button ID="btnLogin" runat="server" Text="Sign In" OnClick="btnLogin_Click" CssClass="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1.5rem;" />
 
                     <div style="text-align: center; font-size: 0.9rem; color: var(--clr-text-muted);">
                         Don't have an account? <a href="Register.aspx" style="color: var(--clr-accent); font-weight:700;">Create Account</a>
@@ -40,30 +40,4 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptContent" runat="server">
-    <script>
-        function fillDemoCustomer() {
-            document.getElementById('login-email').value = 'eleanor@example.com';
-            document.getElementById('login-password').value = 'password123';
-        }
-
-        function handleCustomerLogin() {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-password').value;
-
-            if (!email || !pass) {
-                showToast('Please enter both email and password', 'error');
-                return;
-            }
-
-            const result = db.loginUser(email, pass);
-            if (result.success) {
-                showToast(`Welcome back, ${result.user.name}!`, 'success');
-                setTimeout(() => {
-                    window.location.href = 'Index.aspx';
-                }, 600);
-            } else {
-                showToast(result.message, 'error');
-            }
-        }
-    </script>
 </asp:Content>

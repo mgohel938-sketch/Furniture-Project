@@ -31,7 +31,7 @@
                                 <i class="fa-solid fa-location-dot"></i>
                             </div>
                             <div>
-                                <h4 style="font-size: 1.1rem; font-family: var(--font-body); font-weight:700;">New York Flagship Gallery</h4>
+                                <h4 style="font-size: 1.1rem; font-family: var(--font-body); font-weight:700;">Flagship Gallery</h4>
                                 <p style="color: var(--clr-text-muted); font-size:0.9rem;">450 Madison Avenue, 12th Floor, New York, NY 10022</p>
                             </div>
                         </div>
@@ -41,18 +41,8 @@
                                 <i class="fa-solid fa-phone"></i>
                             </div>
                             <div>
-                                <h4 style="font-size: 1.1rem; font-family: var(--font-body); font-weight:700;">Direct Phone & WhatsApp</h4>
+                                <h4 style="font-size: 1.1rem; font-family: var(--font-body); font-weight:700;">Direct Phone</h4>
                                 <p style="color: var(--clr-text-muted); font-size:0.9rem;">+1 (800) 458-7647 / +1 (212) 555-0199</p>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 1.25rem;">
-                            <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--clr-accent-light); color: var(--clr-accent); display:flex; align-items:center; justify-content:center; font-size: 1.25rem;">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4 style="font-size: 1.1rem; font-family: var(--font-body); font-weight:700;">Gallery Hours</h4>
-                                <p style="color: var(--clr-text-muted); font-size:0.9rem;">Mon - Sat: 10:00 AM - 7:00 PM | Sun: 11:00 AM - 5:00 PM</p>
                             </div>
                         </div>
                     </div>
@@ -62,23 +52,26 @@
                 <div style="background: var(--clr-bg-card); padding: 2.5rem; border-radius: var(--radius-md); border: 1px solid var(--clr-border); box-shadow: var(--shadow-sm);">
                     <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Send Us a Message</h3>
                     <div id="contact-form">
+                        <div style="margin-bottom: 1rem;">
+                            <asp:Label ID="lblMsg" runat="server" Font-Bold="true"></asp:Label>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">Your Name</label>
-                            <input type="text" id="cnt-name" class="form-control" required placeholder="e.g. Victoria Sterling">
+                            <asp:TextBox ID="txtName" runat="server" CssClass="form-control" placeholder="e.g. Victoria Sterling" required="required"></asp:TextBox>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Email Address</label>
-                            <input type="email" id="cnt-email" class="form-control" required placeholder="victoria@example.com">
+                            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" TextMode="Email" placeholder="victoria@example.com" required="required"></asp:TextBox>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Subject</label>
-                            <input type="text" id="cnt-subject" class="form-control" required placeholder="e.g. Inquiries regarding Velvet Sofa customization">
+                            <asp:TextBox ID="txtSubject" runat="server" CssClass="form-control" placeholder="e.g. Inquiries regarding customization" required="required"></asp:TextBox>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Message</label>
-                            <textarea id="cnt-msg" class="form-control" rows="5" required placeholder="How can our design concierge assist you?"></textarea>
+                            <asp:TextBox ID="txtMessage" runat="server" TextMode="MultiLine" Rows="5" CssClass="form-control" placeholder="How can our concierge assist you?" required="required"></asp:TextBox>
                         </div>
-                        <button type="button" onclick="submitContactForm()" class="btn btn-primary" style="width:100%;">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+                        <asp:Button ID="btnSubmit" runat="server" Text="Submit Message" OnClick="btnSubmit_Click" CssClass="btn btn-primary" style="width: 100%;" />
                     </div>
                 </div>
 
@@ -88,30 +81,4 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ScriptContent" runat="server">
-    <script>
-        function submitContactForm() {
-            const name = document.getElementById('cnt-name').value.trim();
-            const email = document.getElementById('cnt-email').value.trim();
-            const subject = document.getElementById('cnt-subject').value.trim();
-            const message = document.getElementById('cnt-msg').value.trim();
-
-            if (!name || !email || !subject || !message) {
-                showToast('Please fill out all fields', 'error');
-                return;
-            }
-
-            // Save inquiry into SQL Server Database (dbo.Contact)
-            fetch('Contact.aspx/SaveContactToDB', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
-                body: JSON.stringify({ name: name, email: email, subject: subject, message: message })
-            });
-
-            showToast('Thank you! Message sent to FurniShop Concierge.', 'success');
-            document.getElementById('cnt-name').value = '';
-            document.getElementById('cnt-email').value = '';
-            document.getElementById('cnt-subject').value = '';
-            document.getElementById('cnt-msg').value = '';
-        }
-    </script>
 </asp:Content>
