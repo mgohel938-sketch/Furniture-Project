@@ -12,12 +12,6 @@ namespace FurniShop
 {
     public partial class AdminDashboard : System.Web.UI.Page
     {
-        protected Label lblTotalProducts;
-        protected Label lblTotalCustomers;
-        protected Label lblTotalOrders;
-        protected Label lblTotalSales;
-        protected GridView GridViewRecentOrders;
-
         SqlConnection con;
         SqlCommand cmd;
         SqlDataAdapter da;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,15 +12,6 @@ namespace FurniShop
 {
     public partial class AdminEditProduct : System.Web.UI.Page
     {
-        protected Label lblMsg;
-        protected TextBox txtProductName;
-        protected DropDownList ddlCategory;
-        protected TextBox txtPrice;
-        protected TextBox txtStock;
-        protected TextBox txtDescription;
-        protected TextBox txtImageUrl;
-        protected Image imgPreview;
-        protected Button btnUpdateProduct;
 
         SqlConnection con;
         SqlCommand cmd;

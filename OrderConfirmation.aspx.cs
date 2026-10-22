@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,10 +12,6 @@ namespace FurniShop
 {
     public partial class OrderConfirmation : System.Web.UI.Page
     {
-        protected Label lblOrderId;
-        protected Label lblOrderDate;
-        protected Label lblCustomerName;
-        protected Label lblTotalPrice;
 
         SqlConnection con;
         SqlCommand cmd;

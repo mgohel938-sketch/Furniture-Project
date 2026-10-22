@@ -12,18 +12,8 @@ namespace FurniShop
 {
     public partial class Register : System.Web.UI.Page
     {
-        protected Label lblMessage;
-        protected TextBox txtFullName;
-        protected TextBox txtEmail;
-        protected TextBox txtPhone;
-        protected TextBox txtPassword;
-        protected TextBox txtConfirmPassword;
-        protected Button btnRegister;
-
         SqlConnection con;
         SqlCommand cmd;
-        SqlDataAdapter da;
-        DataSet ds;
 
         string s = ConfigurationManager.ConnectionStrings["dbcon"].ConnectionString;
 
@@ -56,7 +46,7 @@ namespace FurniShop
             }
 
             getcon();
-            cmd = new SqlCommand("insert into Users(Name,Email,Phone,Password,CreatedDate) values('" + txtFullName.Text + "', '" + txtEmail.Text + "', '" + txtPhone.Text + "', '" + txtPassword.Text + "', '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')", con);
+            cmd = new SqlCommand("insert into Users(Name,Email,Phone,Password,CreatedDate) values('" + txtFullName.Text.Trim() + "', '" + txtEmail.Text.Trim() + "', '" + txtPhone.Text.Trim() + "', '" + txtPassword.Text + "', '" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "')", con);
             cmd.ExecuteNonQuery();
             clear();
             Response.Redirect("Login.aspx");

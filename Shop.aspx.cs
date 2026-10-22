@@ -12,13 +12,7 @@ namespace FurniShop
 {
     public partial class Shop : System.Web.UI.Page
     {
-        protected Label lblTitle;
-        protected TextBox txtSearch;
-        protected Button btnSearch;
-        protected Repeater rptrProducts;
-
         SqlConnection con;
-        SqlCommand cmd;
         SqlDataAdapter da;
         DataSet ds;
 
@@ -70,13 +64,13 @@ namespace FurniShop
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtSearch.Text))
+            if (!string.IsNullOrEmpty(txtSearch.Text.Trim()))
             {
                 getcon();
-                da = new SqlDataAdapter("select * from Products where ProductName like '%" + txtSearch.Text + "%' or Category like '%" + txtSearch.Text + "%'", con);
+                da = new SqlDataAdapter("select * from Products where ProductName like '%" + txtSearch.Text.Trim() + "%' or Category like '%" + txtSearch.Text.Trim() + "%'", con);
                 ds = new DataSet();
                 da.Fill(ds);
-                lblTitle.Text = "Search Results for '" + txtSearch.Text + "'";
+                lblTitle.Text = "Search Results for '" + txtSearch.Text.Trim() + "'";
                 rptrProducts.DataSource = ds;
                 rptrProducts.DataBind();
             }

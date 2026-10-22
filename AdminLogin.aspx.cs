@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,10 +12,6 @@ namespace FurniShop
 {
     public partial class AdminLogin : System.Web.UI.Page
     {
-        protected Label lblMsg;
-        protected TextBox txtEmail;
-        protected TextBox txtPassword;
-        protected Button btnLogin;
 
         SqlConnection con;
         SqlCommand cmd;

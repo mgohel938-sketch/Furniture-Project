@@ -12,15 +12,6 @@ namespace FurniShop
 {
     public partial class ProductDetails : System.Web.UI.Page
     {
-        protected Image imgProduct;
-        protected Label lblCategory;
-        protected Label lblName;
-        protected Label lblPrice;
-        protected Label lblDescription;
-        protected Label lblStock;
-        protected TextBox txtQty;
-        protected Button btnAddToCart;
-
         SqlConnection con;
         SqlCommand cmd;
         SqlDataAdapter da;

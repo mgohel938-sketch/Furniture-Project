@@ -12,10 +12,6 @@ namespace FurniShop
 {
     public partial class Cart : System.Web.UI.Page
     {
-        protected GridView GridView1;
-        protected Label lblGrandTotal;
-        protected Button btnClearCart;
-
         SqlConnection con;
         SqlCommand cmd;
         SqlDataAdapter da;

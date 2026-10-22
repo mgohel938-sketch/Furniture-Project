@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="category-card" onclick="window.location.href='Shop.aspx?category=Chair'">
-                        <img src="https://images.unsplash.com/photo-1580481077195-c990b79872e4?auto=format&fit=crop&w=800&q=80" alt="Lounge Chairs">
+                        <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80" alt="Lounge Chairs">
                         <div class="category-overlay">
                             <h3 class="category-title">Accent Chairs</h3>
                             <div class="category-count">Ergonomic swivel and brass-frame lounge chairs</div>

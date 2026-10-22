@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,12 +12,6 @@ namespace FurniShop
 {
     public partial class Contact : System.Web.UI.Page
     {
-        protected Label lblMsg;
-        protected TextBox txtName;
-        protected TextBox txtEmail;
-        protected TextBox txtSubject;
-        protected TextBox txtMessage;
-        protected Button btnSubmit;
 
         SqlConnection con;
         SqlCommand cmd;

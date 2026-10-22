@@ -12,15 +12,6 @@ namespace FurniShop
 {
     public partial class Checkout : System.Web.UI.Page
     {
-        protected Label lblMessage;
-        protected TextBox txtName;
-        protected TextBox txtEmail;
-        protected TextBox txtPhone;
-        protected TextBox txtAddress;
-        protected DropDownList ddlPayment;
-        protected Label lblOrderTotal;
-        protected Button btnPlaceOrder;
-
         SqlConnection con;
         SqlCommand cmd;
         SqlDataAdapter da;
@@ -39,6 +30,30 @@ namespace FurniShop
             if (!IsPostBack)
             {
                 calculateTotal();
+                loadUserInfo();
+            }
+        }
+
+        void loadUserInfo()
+        {
+            if (Session["user"] != null)
+            {
+                getcon();
+                string user = Session["user"].ToString();
+                da = new SqlDataAdapter("select * from Users where Email='" + user + "'", con);
+                ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    DataRow r = ds.Tables[0].Rows[0];
+                    txtName.Text = r["Name"].ToString();
+                    txtEmail.Text = r["Email"].ToString();
+                    txtPhone.Text = r["Phone"].ToString();
+                }
+                else
+                {
+                    txtEmail.Text = user;
+                }
             }
         }
 
@@ -74,7 +89,8 @@ namespace FurniShop
             decimal total = ViewState["total"] != null ? Convert.ToDecimal(ViewState["total"]) : 0;
             string now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            cmd = new SqlCommand("insert into Orders(CustomerName, CustomerEmail, Address, TotalPrice, PaymentMethod, OrderDate) values('" + txtName.Text + "', '" + txtEmail.Text + "', '" + txtAddress.Text + "', '" + total + "', '" + ddlPayment.SelectedValue + "', '" + now + "')", con);
+            string orderEmail = (!string.IsNullOrEmpty(user) && user != "Guest") ? user : txtEmail.Text.Trim();
+            cmd = new SqlCommand("insert into Orders(CustomerName, CustomerEmail, Address, TotalPrice, PaymentMethod, OrderDate) values('" + txtName.Text.Trim() + "', '" + orderEmail + "', '" + txtAddress.Text.Trim() + "', '" + total + "', '" + ddlPayment.SelectedValue + "', '" + now + "')", con);
             cmd.ExecuteNonQuery();
 
             cmd = new SqlCommand("delete from Cart_tbl where cart_user_id='" + user + "'", con);

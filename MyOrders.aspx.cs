@@ -12,10 +12,7 @@ namespace FurniShop
 {
     public partial class MyOrders : System.Web.UI.Page
     {
-        protected GridView GridViewMyOrders;
-
         SqlConnection con;
-        SqlCommand cmd;
         SqlDataAdapter da;
         DataSet ds;
 
@@ -29,6 +26,12 @@ namespace FurniShop
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["user"] == null)
+            {
+                Response.Redirect("Login.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
                 fetchMyOrders();
@@ -38,12 +41,8 @@ namespace FurniShop
         void fetchMyOrders()
         {
             getcon();
-            string user = Session["user"] != null ? Session["user"].ToString() : "";
-            string q = "select * from Orders order by OrderId desc";
-            if (!string.IsNullOrEmpty(user))
-            {
-                q = "select * from Orders where CustomerEmail='" + user + "' order by OrderId desc";
-            }
+            string user = Session["user"].ToString();
+            string q = "select * from Orders where CustomerEmail='" + user + "' order by OrderId desc";
 
             da = new SqlDataAdapter(q, con);
             ds = new DataSet();
