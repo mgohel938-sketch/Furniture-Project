@@ -24,7 +24,8 @@ function renderAdminSidebar() {
         ]},
         { label: 'Sales & Orders', items: [
             { page: 'AdminOrders.aspx', icon: 'fa-receipt', text: 'Orders' },
-            { page: 'AdminCustomers.aspx', icon: 'fa-users', text: 'Customers' }
+            { page: 'AdminCustomers.aspx', icon: 'fa-users', text: 'Customers' },
+            { page: 'Reports.aspx', icon: 'fa-chart-pie', text: 'Crystal Reports' }
         ]}
     ];
 

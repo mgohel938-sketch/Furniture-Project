@@ -59,11 +59,19 @@ namespace FurniShop
 
         protected void btnAddToCart_Click(object sender, EventArgs e)
         {
+            // Login check: User must be logged in first!
+            if (Session["user"] == null)
+            {
+                string rawUrl = Request.RawUrl;
+                Response.Redirect("Login.aspx?returnUrl=" + Server.UrlEncode(rawUrl) + "&msg=" + Server.UrlEncode("Please login first to add items to your cart."));
+                return;
+            }
+
             string pidStr = Request.QueryString["pid"] ?? Request.QueryString["id"];
             if (!string.IsNullOrEmpty(pidStr))
             {
                 int pid = Convert.ToInt32(pidStr);
-                string user = Session["user"] != null ? Session["user"].ToString() : "Guest";
+                string user = Session["user"].ToString();
                 int qty = 1;
                 int.TryParse(txtQty.Text, out qty);
                 if (qty <= 0) qty = 1;

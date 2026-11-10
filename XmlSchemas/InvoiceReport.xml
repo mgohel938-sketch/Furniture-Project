@@ -1,0 +1,270 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="InvoiceReport">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="OrderId" type="xs:int" minOccurs="0" />
+                <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
+                <xs:element name="CustomerEmail" type="xs:string" minOccurs="0" />
+                <xs:element name="Address" type="xs:string" minOccurs="0" />
+                <xs:element name="PaymentMethod" type="xs:string" minOccurs="0" />
+                <xs:element name="OrderDate" type="xs:dateTime" minOccurs="0" />
+                <xs:element name="TotalPrice" type="xs:decimal" minOccurs="0" />
+                <xs:element name="Status" type="xs:string" minOccurs="0" />
+                <xs:element name="DetailId" type="xs:int" minOccurs="0" />
+                <xs:element name="ProductName" type="xs:string" minOccurs="0" />
+                <xs:element name="Price" type="xs:decimal" minOccurs="0" />
+                <xs:element name="Quantity" type="xs:int" minOccurs="0" />
+                <xs:element name="Total" type="xs:decimal" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <InvoiceReport>
+    <OrderId>1001</OrderId>
+    <CustomerName>Milan_ X18</CustomerName>
+    <CustomerEmail>milanx018@gmail.com</CustomerEmail>
+    <Address>Rajavdla (jam) high school-rajavadla (jam)-(360025 Rajavdla, jam, Gujarat 360025</Address>
+    <PaymentMethod>Cash on Delivery</PaymentMethod>
+    <OrderDate>2026-10-07T19:19:06.547+05:30</OrderDate>
+    <TotalPrice>24871.20</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>1</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1001</OrderId>
+    <CustomerName>Milan_ X18</CustomerName>
+    <CustomerEmail>milanx018@gmail.com</CustomerEmail>
+    <Address>Rajavdla (jam) high school-rajavadla (jam)-(360025 Rajavdla, jam, Gujarat 360025</Address>
+    <PaymentMethod>Cash on Delivery</PaymentMethod>
+    <OrderDate>2026-10-07T19:19:06.547+05:30</OrderDate>
+    <TotalPrice>24871.20</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>9</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1002</OrderId>
+    <CustomerName>Milan_ X18</CustomerName>
+    <CustomerEmail>milanx018@gmail.com</CustomerEmail>
+    <Address>Rajavdla (jam) high school-rajavadla (jam)-(360025 Rajavdla, jam, Gujarat 360025</Address>
+    <PaymentMethod>Cash on Delivery</PaymentMethod>
+    <OrderDate>2026-10-15T10:07:44.317+05:30</OrderDate>
+    <TotalPrice>8190.60</TotalPrice>
+    <Status>Delivered</Status>
+    <DetailId>2</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1002</OrderId>
+    <CustomerName>Milan_ X18</CustomerName>
+    <CustomerEmail>milanx018@gmail.com</CustomerEmail>
+    <Address>Rajavdla (jam) high school-rajavadla (jam)-(360025 Rajavdla, jam, Gujarat 360025</Address>
+    <PaymentMethod>Cash on Delivery</PaymentMethod>
+    <OrderDate>2026-10-15T10:07:44.317+05:30</OrderDate>
+    <TotalPrice>8190.60</TotalPrice>
+    <Status>Delivered</Status>
+    <DetailId>10</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1004</OrderId>
+    <CustomerName>ashish</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-21T11:00:47+05:30</OrderDate>
+    <TotalPrice>6720.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>3</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1004</OrderId>
+    <CustomerName>ashish</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-21T11:00:47+05:30</OrderDate>
+    <TotalPrice>6720.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>11</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1006</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-22T11:54:06+05:30</OrderDate>
+    <TotalPrice>8400.00</TotalPrice>
+    <Status>Pending</Status>
+    <DetailId>4</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1006</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-22T11:54:06+05:30</OrderDate>
+    <TotalPrice>8400.00</TotalPrice>
+    <Status>Pending</Status>
+    <DetailId>12</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1007</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-22T13:57:53+05:30</OrderDate>
+    <TotalPrice>12600.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>5</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1007</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>rajkot</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-22T13:57:53+05:30</OrderDate>
+    <TotalPrice>12600.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>13</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1008</OrderId>
+    <CustomerName>User</CustomerName>
+    <CustomerEmail>user@gmail.com</CustomerEmail>
+    <Address>x</Address>
+    <PaymentMethod>UPI / Online Transfer</PaymentMethod>
+    <OrderDate>2026-10-27T11:57:44+05:30</OrderDate>
+    <TotalPrice>3960.00</TotalPrice>
+    <Status>Delivered</Status>
+    <DetailId>6</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1008</OrderId>
+    <CustomerName>User</CustomerName>
+    <CustomerEmail>user@gmail.com</CustomerEmail>
+    <Address>x</Address>
+    <PaymentMethod>UPI / Online Transfer</PaymentMethod>
+    <OrderDate>2026-10-27T11:57:44+05:30</OrderDate>
+    <TotalPrice>3960.00</TotalPrice>
+    <Status>Delivered</Status>
+    <DetailId>14</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1009</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>Delhi</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-29T07:40:44+05:30</OrderDate>
+    <TotalPrice>8400.00</TotalPrice>
+    <Status>Pending</Status>
+    <DetailId>7</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1009</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>Delhi</Address>
+    <PaymentMethod>Cash On Delivery</PaymentMethod>
+    <OrderDate>2026-10-29T07:40:44+05:30</OrderDate>
+    <TotalPrice>8400.00</TotalPrice>
+    <Status>Pending</Status>
+    <DetailId>15</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1010</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>nhgfnhgfbgd</Address>
+    <PaymentMethod>Credit / Debit Card</PaymentMethod>
+    <OrderDate>2026-10-30T11:01:58+05:30</OrderDate>
+    <TotalPrice>5850.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>8</DetailId>
+    <ProductName>Royal Velvet Chesterfield Sofa</ProductName>
+    <Price>6450.00</Price>
+    <Quantity>1</Quantity>
+    <Total>6450.00</Total>
+  </InvoiceReport>
+  <InvoiceReport>
+    <OrderId>1010</OrderId>
+    <CustomerName>MILAN GOHEL</CustomerName>
+    <CustomerEmail>mgohel938@rku.ac.in</CustomerEmail>
+    <Address>nhgfnhgfbgd</Address>
+    <PaymentMethod>Credit / Debit Card</PaymentMethod>
+    <OrderDate>2026-10-30T11:01:58+05:30</OrderDate>
+    <TotalPrice>5850.00</TotalPrice>
+    <Status>Cancelled</Status>
+    <DetailId>16</DetailId>
+    <ProductName>Minimalist Wooden Queen Bed</ProductName>
+    <Price>12345.00</Price>
+    <Quantity>1</Quantity>
+    <Total>12345.00</Total>
+  </InvoiceReport>
+</NewDataSet>

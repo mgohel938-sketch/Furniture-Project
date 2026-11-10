@@ -27,6 +27,14 @@ namespace FurniShop
         protected void Page_Load(object sender, EventArgs e)
         {
             getcon();
+            if (!IsPostBack)
+            {
+                if (Request.QueryString["msg"] != null)
+                {
+                    lblMessage.Text = Request.QueryString["msg"];
+                    lblMessage.ForeColor = System.Drawing.Color.DarkOrange;
+                }
+            }
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -39,16 +47,26 @@ namespace FurniShop
                 if (i > 0)
                 {
                     Session["user"] = txtEmail.Text.Trim();
-                    Response.Redirect("Index.aspx");
+                    
+                    if (!string.IsNullOrEmpty(Request.QueryString["returnUrl"]))
+                    {
+                        Response.Redirect(Request.QueryString["returnUrl"]);
+                    }
+                    else
+                    {
+                        Response.Redirect("Index.aspx");
+                    }
                 }
                 else
                 {
                     lblMessage.Text = "Invalid Email or Password. Please try again.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
                 }
             }
             else
             {
                 lblMessage.Text = "Please enter both Email and Password.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
     }

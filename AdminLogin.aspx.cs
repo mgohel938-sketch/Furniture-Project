@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,7 +12,6 @@ namespace FurniShop
 {
     public partial class AdminLogin : System.Web.UI.Page
     {
-
         SqlConnection con;
         SqlCommand cmd;
         SqlDataAdapter da;
@@ -23,7 +22,6 @@ namespace FurniShop
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            getcon();
         }
 
         void getcon()
@@ -34,21 +32,39 @@ namespace FurniShop
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if (txtEmail.Text == "admin@furnishop.com" && txtPassword.Text == "admin123")
+            lblMsg.Text = "";
+
+            if (string.IsNullOrWhiteSpace(txtEmail.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
             {
-                Session["admin"] = txtEmail.Text;
+                lblMsg.Text = "Please enter both Email and Password";
+                return;
+            }
+
+            string email = txtEmail.Text.Trim();
+            string pass = txtPassword.Text.Trim();
+
+            // Check hardcoded admin credentials
+            if (email == "admin@furnishop.com" && pass == "admin123")
+            {
+                Session["admin"] = email;
                 Response.Redirect("AdminDashboard.aspx");
                 return;
             }
 
-            if (!(string.IsNullOrEmpty(txtEmail.Text)) && !(string.IsNullOrEmpty(txtPassword.Text)))
+            // Or check database admin credentials
+            try
             {
                 getcon();
-                cmd = new SqlCommand("select count(*) from Users where (Email='" + txtEmail.Text + "' or Name='" + txtEmail.Text + "') and Password='" + txtPassword.Text + "'", con);
-                i = Convert.ToInt16(cmd.ExecuteScalar());
+                cmd = new SqlCommand("SELECT COUNT(*) FROM Users WHERE (Email = @email OR Name = @email) AND Password = @pass AND Role = 'Admin'", con);
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Parameters.AddWithValue("@pass", pass);
+
+                i = Convert.ToInt32(cmd.ExecuteScalar());
+                con.Close();
+
                 if (i > 0)
                 {
-                    Session["admin"] = txtEmail.Text;
+                    Session["admin"] = email;
                     Response.Redirect("AdminDashboard.aspx");
                 }
                 else
@@ -56,9 +72,9 @@ namespace FurniShop
                     lblMsg.Text = "Invalid Admin Email or Password";
                 }
             }
-            else
+            catch
             {
-                lblMsg.Text = "Please enter both Email and Password";
+                lblMsg.Text = "Invalid Admin Email or Password";
             }
         }
     }

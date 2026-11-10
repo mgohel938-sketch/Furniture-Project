@@ -62,9 +62,10 @@
                                         <h3 class="product-title">
                                             <a href='ProductDetails.aspx?pid=<%# Eval("Id") %>'><%# Eval("ProductName") %></a>
                                         </h3>
-                                        <div class="product-price">&#8377;<%# Eval("Price") %></div>
-                                        <div style="margin-top: 1rem;">
-                                            <a href='ProductDetails.aspx?pid=<%# Eval("Id") %>' class="btn btn-primary btn-sm" style="width:100%; text-align:center; display:block;">View Details</a>
+                                        <div class="product-price">&#8377;<%# string.Format("{0:N0}", Eval("Price")) %></div>
+                                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                            <a href='ProductDetails.aspx?pid=<%# Eval("Id") %>' class="btn btn-outline btn-sm" style="flex: 1; text-align:center; padding: 0.4rem 0.5rem; font-size: 0.85rem;">Details</a>
+                                            <a href='Cart.aspx?add=<%# Eval("Id") %>' class="btn btn-primary btn-sm" style="flex: 1.2; text-align:center; padding: 0.4rem 0.5rem; font-size: 0.85rem;"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</a>
                                         </div>
                                     </div>
                                 </div>
